@@ -1,0 +1,19 @@
+{
+  "services": {
+    "frontend": {
+      "root": "frontend",
+      "build": "npm ci && npm run build",
+      "start": "npx serve -s dist",      // static file server
+      "env": { "VITE_API_URL": "https://backend.production.up.railway.app" }
+    },
+    "backend": {
+      "root": "backend",
+      "build": "pip install -r requirements.txt",
+      "start": "uvicorn app.main:app --host 0.0.0.0 --port $PORT",
+      "env": {
+        // Railway injects these automatically after you add a Postgres plugin
+        "DATABASE_URL": "${{postgresql.connectionString}}"
+      }
+    }
+  }
+}
