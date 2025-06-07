@@ -1,12 +1,12 @@
 import logo from './logo.svg';
 import './App.css';
-import IngredientManager from './components/IngredientManager';
+import IngredientSelectPage from './pages/IngredientSelectPage';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-          <IngredientManager/>
+          <IngredientSelectPage/>
       </header>
     </div>
   );
