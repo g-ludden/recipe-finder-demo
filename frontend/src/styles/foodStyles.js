@@ -140,12 +140,16 @@ export const components = {
   },
 };
 
-// Layout System - MISSING FROM YOUR ORIGINAL FILE
 export const layout = {
-  // Containers
+  // Constrained containers (your existing ones)
   container: 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8',
   containerSmall: 'max-w-4xl mx-auto px-4 sm:px-6 lg:px-8',
   containerTight: 'max-w-2xl mx-auto px-4 sm:px-6 lg:px-8',
+
+  // NEW: Full-width containers
+  containerFull: 'w-full px-4 sm:px-6 lg:px-8',
+  containerFullNoSpacing: 'w-full',
+  containerFullMinimal: 'w-full px-2 sm:px-4',
 
   // Sections
   section: 'py-12 lg:py-16',

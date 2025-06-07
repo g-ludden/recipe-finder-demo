@@ -4,7 +4,7 @@ import { components, backgrounds } from '../styles/foodStyles';
 
 // Default food-friendly styles using the new style system
 const defaultStyles = {
-  container: "w-full space-y-8",
+  container: "w-full",
   searchSection: "w-full",
   panelSection: "w-full",
   panelTitle: `${components.heading.h3} flex items-center space-x-2`,

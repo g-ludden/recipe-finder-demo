@@ -4,7 +4,7 @@ FIND_BEST_RECIPES = """
             recipe_id,
             COUNT(*) AS n_ingredients_used
         FROM ingredients_master
-        WHERE ingredient_id = ANY(:chosen_ingredient_ids)
+        WHERE ingredient_id IN ({ingredient_ids})
         GROUP BY recipe_id
     )
     
@@ -20,5 +20,5 @@ FIND_BEST_RECIPES = """
     JOIN rel_ids t2
     ON t1.recipe_id = t2.recipe_id
     ORDER BY t2.n_ingredients_used DESC, t1.weighted_rating DESC
-    LIMIT :limit
+    LIMIT {limit}
 """

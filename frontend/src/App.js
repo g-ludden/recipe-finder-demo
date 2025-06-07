@@ -5,9 +5,7 @@ import IngredientSelectPage from './pages/IngredientSelectPage';
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-          <IngredientSelectPage/>
-      </header>
+        <IngredientSelectPage/>
     </div>
   );
 }
