@@ -1,22 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { components } from '../styles/foodStyles';
 
-// Default styles object - easily customizable
+// Default food-friendly styles using the new style system
 const defaultStyles = {
   container: "relative w-full",
-  input: "w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent",
-  loadingSpinner: "absolute right-3 top-1/2 transform -translate-y-1/2",
-  spinner: "animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500",
-  dropdown: "absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto",
-  resultItem: "px-4 py-2 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors",
-  resultItemSelected: "bg-blue-50 text-blue-700",
-  resultItemHover: "hover:bg-gray-50",
-  resultText: "font-medium text-gray-900",
-  noResults: "px-4 py-3 text-gray-500 text-center"
+  input: components.input.search,
+  loadingSpinner: "absolute right-4 top-1/2 transform -translate-y-1/2",
+  spinner: "text-orange-500 animate-spin text-lg",
+  dropdown: "absolute z-50 w-full mt-2 bg-white/95 backdrop-blur-sm border-2 border-orange-200 rounded-xl shadow-xl max-h-64 overflow-y-auto",
+  resultItem: "px-4 py-3 cursor-pointer border-b border-orange-100 last:border-b-0 transition-all duration-200 flex items-center space-x-3",
+  resultItemSelected: "bg-gradient-to-r from-orange-100 to-amber-100 text-orange-800 transform translate-x-1",
+  resultItemHover: "hover:bg-gradient-to-r hover:from-orange-50 hover:to-amber-50 hover:text-orange-700",
+  resultText: "font-medium text-stone-700",
+  resultIcon: "w-8 h-8 bg-gradient-to-br from-orange-200 to-amber-200 rounded-full flex items-center justify-center text-orange-700 font-bold flex-shrink-0",
+  noResults: "px-4 py-6 text-stone-500 text-center bg-gradient-to-r from-orange-25 to-amber-25 rounded-lg m-2",
+  searchIcon: "absolute left-4 top-1/2 transform -translate-y-1/2 text-orange-400 text-lg"
 };
 
 const IngredientSearch = ({ 
   onIngredientSelect, 
-  placeholder = "Search for ingredients...",
+  placeholder = "Search for ingredients... 🔍",
   className = "",
   searchIngredient, // Assuming this function is passed as a prop
   styles = {} // Allow custom styles to be passed in
@@ -67,8 +70,17 @@ const IngredientSearch = ({
     setQuery(e.target.value);
   };
 
-  // Handle ingredient selection
+  // Handle ingredient selection with animation
   const handleIngredientSelect = (ingredient) => {
+    // Add a small animation effect
+    const selectedElement = resultsRef.current?.children[selectedIndex];
+    if (selectedElement) {
+      selectedElement.style.transform = 'scale(0.98)';
+      setTimeout(() => {
+        selectedElement.style.transform = '';
+      }, 150);
+    }
+
     setQuery('');
     setResults([]);
     setIsOpen(false);
@@ -119,10 +131,40 @@ const IngredientSearch = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Get ingredient emoji based on name (simple heuristic)
+  const getIngredientEmoji = (name) => {
+    const lowerName = name.toLowerCase();
+    if (lowerName.includes('tomato')) return '🍅';
+    if (lowerName.includes('onion')) return '🧅';
+    if (lowerName.includes('carrot')) return '🥕';
+    if (lowerName.includes('pepper')) return '🌶️';
+    if (lowerName.includes('lettuce') || lowerName.includes('salad')) return '🥬';
+    if (lowerName.includes('potato')) return '🥔';
+    if (lowerName.includes('mushroom')) return '🍄';
+    if (lowerName.includes('corn')) return '🌽';
+    if (lowerName.includes('apple')) return '🍎';
+    if (lowerName.includes('banana')) return '🍌';
+    if (lowerName.includes('cheese')) return '🧀';
+    if (lowerName.includes('milk')) return '🥛';
+    if (lowerName.includes('egg')) return '🥚';
+    if (lowerName.includes('chicken')) return '🐔';
+    if (lowerName.includes('beef')) return '🥩';
+    if (lowerName.includes('fish')) return '🐟';
+    if (lowerName.includes('bread')) return '🍞';
+    if (lowerName.includes('rice')) return '🍚';
+    if (lowerName.includes('pasta')) return '🍝';
+    return '🥘'; // Default food emoji
+  };
+
   return (
     <div className={`${componentStyles.container} ${className}`} ref={searchRef}>
       {/* Search Input */}
       <div className="relative">
+        {/* Search Icon */}
+        <div className={componentStyles.searchIcon}>
+          🔍
+        </div>
+        
         <input
           type="text"
           value={query}
@@ -135,7 +177,7 @@ const IngredientSearch = ({
         {/* Loading Spinner */}
         {isLoading && (
           <div className={componentStyles.loadingSpinner}>
-            <div className={componentStyles.spinner}></div>
+            <div className={componentStyles.spinner}>⟳</div>
           </div>
         )}
       </div>
@@ -144,7 +186,7 @@ const IngredientSearch = ({
       {isOpen && (
         <div 
           ref={resultsRef}
-          className={componentStyles.dropdown}
+          className={`${componentStyles.dropdown} animate-fade-in`}
         >
           {results.length > 0 ? (
             results.map((ingredient, index) => (
@@ -157,15 +199,36 @@ const IngredientSearch = ({
                     : componentStyles.resultItemHover
                 }`}
               >
-                <span className={componentStyles.resultText}>
-                  {ingredient.name}
-                </span>
+                <div className={componentStyles.resultIcon}>
+                  {getIngredientEmoji(ingredient.name)}
+                </div>
+                <div className="flex-1">
+                  <span className={componentStyles.resultText}>
+                    {ingredient.name}
+                  </span>
+                  {ingredient.category && (
+                    <div className="text-xs text-stone-500 mt-1">
+                      {ingredient.category}
+                    </div>
+                  )}
+                </div>
+                {index === selectedIndex && (
+                  <div className="text-orange-500 text-sm">
+                    ↵
+                  </div>
+                )}
               </div>
             ))
           ) : (
             !isLoading && query.trim() && (
               <div className={componentStyles.noResults}>
-                No ingredients found for "{query}"
+                <div className="text-2xl mb-2">🤔</div>
+                <div className="font-medium text-stone-600">
+                  No ingredients found for "{query}"
+                </div>
+                <div className="text-sm text-stone-500 mt-1">
+                  Try a different search term
+                </div>
               </div>
             )
           )}

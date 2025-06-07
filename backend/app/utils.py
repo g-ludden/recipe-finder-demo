@@ -41,7 +41,6 @@ def fetch_top_k_ingredients(search_query, limit=10):
             return res[:limit]
         else:
             return res
-    return
 
 def token_search(tokens):
     candidate_idxs = [

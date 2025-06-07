@@ -9,7 +9,7 @@ from app.utils import fetch_top_k_ingredients, rev_ingredient_lookup
 app = FastAPI()
 
 origins = [
-    os.getenv("VITE_SITE_ORIGIN", "http://localhost:5173"),
+    os.getenv("VITE_SITE_ORIGIN", "http://localhost:3000"),
     "https://frontend-production.up.railway.app"
 ]
 app.add_middleware(
