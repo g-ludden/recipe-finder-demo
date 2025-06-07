@@ -142,7 +142,7 @@ const IngredientManager = ({
         <IngredientSearch
           searchIngredient={searchIngredient}
           onIngredientSelect={handleIngredientSelect}
-          placeholder="Search and add ingredients... 🔍"
+          placeholder="Search and add ingredients..."
           styles={styles.search} // Allow nested search styles
         />
       </div>
@@ -166,7 +166,7 @@ const IngredientManager = ({
         </div>
 
         {/* Stats Section */}
-        {showStats && ingredients.length > 0 && (
+        {/* {showStats && ingredients.length > 0 && (
           <div className={componentStyles.statsContainer}>
             <div className="flex items-center justify-between">
               <span className={componentStyles.statsText}>
@@ -185,14 +185,14 @@ const IngredientManager = ({
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
-        {/* Warning for approaching max */}
+        {/* Warning for approaching max
         {showMaxWarning && isNearingMax && ingredients.length < maxIngredients && (
           <div className={componentStyles.maxReachedWarning}>
             ⚠️ You're approaching the maximum number of ingredients ({maxIngredients})
           </div>
-        )}
+        )} */}
 
         {/* Error Display */}
         {error && (

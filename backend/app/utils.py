@@ -1,5 +1,4 @@
 import pandas as pd
-import random
 import inflect
 from rapidfuzz import fuzz, process
 
@@ -13,6 +12,17 @@ ingredient_tokens = [
     set(ingredient.split(' ')) for ingredient in ingredients
 ]
 N = len(ingredients)
+
+pantry_df = pd.read_excel('./app/data/pantry_ingredients.xlsx')
+pantry_ingredients = pantry_df['ingredient_name'].tolist()
+pantry_ids = pantry_df['ingredient_id'].tolist()
+pantry_ingredients_preload = [
+    {
+        "id": id_,
+        "name": ingredient
+    }
+    for id_, ingredient in zip(pantry_ids, pantry_ingredients)
+]
 
 inflector = inflect.engine()
 
@@ -28,19 +38,23 @@ def fetch_top_k_ingredients(search_query, limit=10):
         inflected_toks = [inflector.plural(tok) for tok in toks]
         full_toks = set(toks + inflected_toks)
         candidates = token_search(full_toks)
-        fuzz_ranked = process.extract(
-            search_query, candidates, scorer=fuzz.token_sort_ratio, limit=limit
-        )
-        res = [x[0] for x in fuzz_ranked]
-        return res
+
     else:
         search_query = search_query.lower()
-        res = [ing for ing in ingredients if search_query in ing]
+        search_query_inflected = inflector.plural(search_query)
+        candidates = [
+            ing for ing in ingredients if (
+                    search_query in ing
+                    or search_query_inflected in ing
+            )
+        ]
 
-        if len(res) > limit:
-            return res[:limit]
-        else:
-            return res
+    fuzz_ranked = process.extract(
+        search_query, candidates, scorer=fuzz.token_sort_ratio, limit=limit
+    )
+    res = [x[0] for x in fuzz_ranked]
+    return res
+
 
 def token_search(tokens):
     candidate_idxs = [

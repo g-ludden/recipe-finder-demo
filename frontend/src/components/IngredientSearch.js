@@ -19,7 +19,7 @@ const debugStyles = {
 
 const IngredientSearch = ({ 
   onIngredientSelect, 
-  placeholder = "Search for ingredients... 🔍",
+  placeholder = "Search for ingredients... ",
   className = "",
   searchIngredient,
   styles = {}
@@ -98,7 +98,7 @@ const IngredientSearch = ({
           className="absolute left-3 top-1/2 transform -translate-y-1/2 text-orange-400 text-lg"
           style={{ pointerEvents: 'none', zIndex: 2 }}
         >
-          🔍
+
         </div>
         
         {/* Input with minimal, safe styling */}

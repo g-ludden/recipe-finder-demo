@@ -4,7 +4,7 @@ import IngredientManager from '../components/IngredientManager';
 import { components, backgrounds, layout } from '../styles/foodStyles';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 
-const IngredientSelectPage = () => {
+const IngredientSelectPage = ({onNavigateToRecipes}) => {
   //const [selectedIngredients, setSelectedIngredients] = useState([]);
   const [selectedIngredients, setSelectedIngredients] = useLocalStorage('selectedIngredients', []);
   
@@ -13,7 +13,18 @@ const IngredientSelectPage = () => {
 
   // Mock API functions - replace with your actual API calls
   const loadPresetIngredients = async () => {
-    return [];
+    try {
+        const response = await fetch(`http://127.0.0.1:8000/fetch-pantry-ingredients`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch pantry ingredients');
+        }
+        const data = await response.json();
+        console.log('Pantry ingredients', data)
+        return data.ingredients || [];
+      } catch (error) {
+        console.error('Error fetching pantry ingredients:', error);
+        return [];
+      }
   };
 
   const searchIngredient = async (query) => {
@@ -25,6 +36,7 @@ const IngredientSelectPage = () => {
         throw new Error('Failed to search ingredients');
       }
       const data = await response.json();
+      console.log('Search ingredient results', data)
       return data.ingredients || [];
     } catch (error) {
       console.error('Error searching ingredients:', error);
@@ -37,7 +49,8 @@ const IngredientSelectPage = () => {
       alert('Please select at least one ingredient before continuing.');
       return;
     }
-    
+
+    onNavigateToRecipes();
     console.log('Continuing with ingredients:', selectedIngredients);
   };
 
