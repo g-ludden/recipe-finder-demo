@@ -5,7 +5,7 @@
       "build": "CI=false npm ci && npm run build",
       "start": "npx serve -s dist",
       "env": { 
-        "VITE_API_URL": "backend" 
+        "REACT_APP_API_URL": "backend-production-83bf.up.railway.app" 
       }
     },
     "backend": {
