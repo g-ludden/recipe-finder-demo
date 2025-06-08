@@ -4,11 +4,12 @@ import RecipeCard from '../components/RecipeCard';
 import { components, backgrounds, layout } from '../styles/foodStyles';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 
-const RecipePage = () => {
+const RecipePage = ({onNavigateToIngredients}) => {
   const [selectedIngredients] = useLocalStorage('selectedIngredients', []);
   const [recipes, setRecipes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [gridLayout, setGridLayout] = useState('standard');
 
   // Fetch recipes when component mounts and selectedIngredients exist
   useEffect(() => {
@@ -17,12 +18,34 @@ const RecipePage = () => {
     }
   }, [selectedIngredients]);
 
+  // Auto-detect optimal grid layout based on screen size and recipe count
+  useEffect(() => {
+    const detectOptimalLayout = () => {
+      const width = window.innerWidth;
+      
+      if (width < 640) {
+        setGridLayout('mobile');
+      } else if (width < 1024) {
+        setGridLayout('tablet');
+      } else if (width >= 1536 && recipes.length > 8) {
+        setGridLayout('ultrawide');
+      } else if (width >= 1024 && recipes.length > 6) {
+        setGridLayout('desktop');
+      } else {
+        setGridLayout('standard');
+      }
+    };
+
+    detectOptimalLayout();
+    window.addEventListener('resize', detectOptimalLayout);
+    return () => window.removeEventListener('resize', detectOptimalLayout);
+  }, [recipes.length]);
+
   const fetchRecipes = async () => {
     setIsLoading(true);
     setError(null);
     
     try {
-      // Extract ingredient IDs for the API call
       const ingredientIds = selectedIngredients.map(ingredient => ingredient.id);
       
       const response = await fetch('http://127.0.0.1:8000/find-best-recipes', {
@@ -54,9 +77,38 @@ const RecipePage = () => {
   };
 
   const handleBackToIngredients = () => {
-    // Navigate back to ingredient selection page
-    // You can implement this with your router
+    onNavigateToIngredients();
     console.log('Navigate back to ingredient selection');
+  };
+
+  // Get the appropriate grid classes based on current layout
+  const getGridClasses = () => {
+    const baseClasses = layout.grid.base;
+    
+    let gridClass;
+    switch(gridLayout) {
+      case 'mobile':
+        gridClass = layout.grid.recipeGrid.mobile;
+        break;
+      case 'tablet':
+        gridClass = layout.grid.recipeGrid.tablet;
+        break;
+      case 'desktop':
+        gridClass = layout.grid.recipeGrid.desktop;
+        break;
+      case 'compact':
+        gridClass = layout.grid.recipeGrid.compact;
+        break;
+      case 'ultrawide':
+        gridClass = layout.grid.recipeGrid.ultrawide;
+        break;
+      default:
+        gridClass = layout.grid.recipeGrid.standard;
+    }
+    
+    const gapClass = gridLayout === 'compact' ? layout.grid.gap.sm : layout.grid.gap.responsive;
+    
+    return `${baseClasses} ${gridClass} ${gapClass}`;
   };
 
   // Show message if no ingredients selected
@@ -129,7 +181,7 @@ const RecipePage = () => {
                 Finding Perfect Recipes...
               </h3>
               <p className="text-stone-600">
-                Searching through our recipe database for the best matches
+                Searching for the best matches
               </p>
             </div>
           )}
@@ -168,7 +220,7 @@ const RecipePage = () => {
                     Found {recipes.length} Recipe{recipes.length !== 1 ? 's' : ''}
                   </h2>
                   <p className="text-stone-600">
-                    Sorted by how many of your ingredients they use
+                    Have look through and take your pick!
                   </p>
                 </div>
                 <button
@@ -179,8 +231,8 @@ const RecipePage = () => {
                 </button>
               </div>
 
-              {/* Recipe Grid */}
-              <div className={`${layout.grid.base} ${layout.grid.cols3} gap-6`}>
+              {/* Auto-Responsive Recipe Grid */}
+              <div className={getGridClasses()}>
                 {recipes.map((recipe) => (
                   <RecipeCard
                     key={recipe.id}
@@ -189,7 +241,7 @@ const RecipePage = () => {
                     imageUrl={recipe.imageUrl}
                     avgRating={recipe.avgRating}
                     nIngredientsUsed={recipe.nIngredientsUsed}
-                    totalIngredients={recipe.totalIngredients} // Using selected ingredients as total
+                    totalIngredients={recipe.totalIngredients}
                   />
                 ))}
               </div>

@@ -30,7 +30,8 @@ const Layout = ({ children, className = "" }) => {
         <div className="w-full px-4 sm:px-6 lg:px-8 py-6">
           <div className="text-center text-gray-600">
             <p className="text-sm">
-              Find delicious recipes with the ingredients you have on hand
+            © 2025 Recipe Finder Demo. All rights reserved.
+            Designed and developed by George Ludden
             </p>
           </div>
         </div>

@@ -78,7 +78,7 @@ const IngredientSelectPage = ({onNavigateToRecipes}) => {
             </h1>
             {/* Removed max-w-2xl mx-auto for full width */}
             <p className={`${components.heading.subtitle}`}>
-              Search and select the ingredients you'd like to use. We'll find the perfect recipes 
+              Search and select the ingredients you'd like to use. We'll search the web to find the perfect recipes 
               that make the most of what you have on hand.
             </p>
           </div>

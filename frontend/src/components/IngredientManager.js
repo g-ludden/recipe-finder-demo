@@ -80,12 +80,12 @@ const IngredientManager = ({
       return;
     }
 
-    // Check max ingredients limit
-    if (ingredients.length >= maxIngredients) {
-      setError(`Maximum ${maxIngredients} ingredients allowed`);
-      setTimeout(() => setError(null), 3000);
-      return;
-    }
+    // // Check max ingredients limit
+    // if (ingredients.length >= maxIngredients) {
+    //   setError(`Maximum ${maxIngredients} ingredients allowed`);
+    //   setTimeout(() => setError(null), 3000);
+    //   return;
+    // }
 
     setIngredients(prev => [...prev, ingredient]);
     setError(null); // Clear any previous errors
@@ -112,7 +112,7 @@ const IngredientManager = ({
     if (lowerName.includes('tomato')) return '🍅';
     if (lowerName.includes('onion')) return '🧅';
     if (lowerName.includes('carrot')) return '🥕';
-    if (lowerName.includes('pepper')) return '🌶️';
+    if (lowerName.includes('pepper') || lowerName.includes('chilli')) return '🌶️';
     if (lowerName.includes('lettuce') || lowerName.includes('salad')) return '🥬';
     if (lowerName.includes('potato')) return '🥔';
     if (lowerName.includes('mushroom')) return '🍄';
@@ -263,11 +263,11 @@ const IngredientManager = ({
         </div>
 
         {/* Helper Text */}
-        {ingredients.length > 0 && ingredients.length < 3 && (
+        {/* {ingredients.length > 0 && ingredients.length < 3 && ( */}
           <div className="mt-4 text-center text-sm text-stone-500 bg-orange-50 rounded-lg p-3 border border-orange-100">
-            💡 <strong>Tip:</strong> Add more ingredients to get better recipe matches!
+            💡 <strong>Tip:</strong> Don't forget to add any spices and herbs you may have!
           </div>
-        )}
+        {/* )} */}
       </div>
     </div>
   );

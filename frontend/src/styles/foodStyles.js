@@ -102,6 +102,7 @@ export const components = {
     h5: 'text-lg md:text-xl font-semibold text-stone-700',
     h6: 'text-base md:text-lg font-semibold text-stone-700',
     subtitle: 'text-lg text-stone-600 leading-relaxed',
+    subsubtitle: 'text-sm text-stone-600 leading-relaxed font-style: italic'
   },
 
   // Status Messages - MISSING FROM YOUR ORIGINAL FILE
@@ -158,11 +159,44 @@ export const layout = {
 
   // Grid systems
   grid: {
-    base: 'grid gap-6',
+    base: 'grid',
+    
+    // Standard responsive grids
     cols1: 'grid-cols-1',
     cols2: 'grid-cols-1 md:grid-cols-2',
     cols3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
     cols4: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4',
+    
+    // NEW: Device-optimized recipe grids
+    recipeGrid: {
+      // Basic responsive (original)
+      standard: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
+      
+      // Mobile-first: Single column on small screens, optimized for touch
+      mobile: 'grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
+      
+      // Tablet-optimized: Better use of tablet screen real estate
+      tablet: 'grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
+      
+      // Desktop-first: More columns on larger screens
+      desktop: 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5',
+      
+      // Compact: Smaller cards, more dense layout
+      compact: 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6',
+      
+      // Ultra-wide: For very large screens
+      ultrawide: 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6',
+    },
+    
+    // Gap variations for different layouts
+    gap: {
+      xs: 'gap-2',
+      sm: 'gap-3',
+      md: 'gap-4',
+      lg: 'gap-6',
+      xl: 'gap-8',
+      responsive: 'gap-3 sm:gap-4 md:gap-6 lg:gap-6', // Responsive gaps
+    }
   },
 
   // Flex utilities
@@ -193,6 +227,31 @@ export const animations = {
   bounce: 'animate-bounce',
   pulse: 'animate-pulse',
   wiggle: 'animate-wiggle',
+};
+
+// Device-specific utilities
+export const responsive = {
+  // Show/hide on different devices
+  showOnMobile: 'block sm:hidden',
+  hideOnMobile: 'hidden sm:block',
+  showOnTablet: 'hidden sm:block lg:hidden',
+  showOnDesktop: 'hidden lg:block',
+  
+  // Text sizes that adapt well to different screens
+  textResponsive: {
+    xs: 'text-xs sm:text-sm',
+    sm: 'text-sm sm:text-base',
+    base: 'text-base sm:text-lg',
+    lg: 'text-lg sm:text-xl',
+    xl: 'text-xl sm:text-2xl',
+  },
+  
+  // Padding that scales with screen size
+  paddingResponsive: {
+    sm: 'p-2 sm:p-3 md:p-4',
+    md: 'p-3 sm:p-4 md:p-6',
+    lg: 'p-4 sm:p-6 md:p-8',
+  }
 };
 
 // Usage Examples:

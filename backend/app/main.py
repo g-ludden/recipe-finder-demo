@@ -14,18 +14,15 @@ from app.queries import FIND_BEST_RECIPES
 app = FastAPI()
 
 origins = [
-    os.getenv("VITE_SITE_ORIGIN", "http://localhost:3000"),
-    "https://frontend-production.up.railway.app"
+    os.getenv("FRONTEND_URL", "http://localhost:3000")
 ]
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True, allow_methods=["*"], allow_headers=["*"]
 )
-
-# engine = sqlalchemy.create_engine(os.getenv("DATABASE_URL", ""))
-# conn = engine.connect()
-
 
 @app.get("/search-ingredient")
 async def search_ingredient(q: str):
@@ -49,40 +46,44 @@ def fetch_pantry_ingredients():
 
 @app.post("/find-best-recipes")
 async def find_best_recipes(request: Request, db: Session = Depends(get_db)):
+    try:
+        body = await request.json()
+        chosen_ingredient_ids = body.get("ingredientIds", [])
 
-    body = await request.json()
-    chosen_ingredient_ids = body.get("ingredientIds", [])
+        if not chosen_ingredient_ids:
+            raise HTTPException(status_code=400, detail="No ingredients provided")
 
-    if not chosen_ingredient_ids:
-        raise HTTPException(status_code=400, detail="No ingredients provided")
+        query = FIND_BEST_RECIPES.format(
+            ingredient_ids=",".join([str(id_) for id_ in chosen_ingredient_ids]),
+            limit=200,
+            pantry_ingredient_ids=",".join([str(id_) for id_ in pantry_ids]),
+            alpha=0.7,
+            beta=0.9
+        )
 
-    query = FIND_BEST_RECIPES.format(
-        ingredient_ids=",".join([str(id_) for id_ in chosen_ingredient_ids]),
-        limit=50,
-        pantry_ingredient_ids=",".join([str(id_) for id_ in pantry_ids])
-    )
+        result = db.execute(text(query))
+        recipes = []
+        recipe_title_log = set()
+        for row in result:
+            if row.recipe_name not in recipe_title_log:
+                recipes.append({
+                    "id": row.recipe_id,
+                    "recipeName": row.recipe_name,
+                    "recipeUrl": row.recipe_url,
+                    "imageUrl": row.image_url,
+                    "avgRating": row.avg_rating,
+                    "nIngredientsUsed": row.n_ingredients_used,
+                    "totalIngredients": row.total_ingredients
+                })
+                recipe_title_log.add(row.recipe_name)
 
+        return {"recipes": recipes}
 
-    result = db.execute(text(query))
-    recipes = []
-    for row in result:
-        recipes.append({
-            "id": row.recipe_id,
-            "recipeName": row.recipe_name,
-            "recipeUrl": row.recipe_url,
-            "imageUrl": row.image_url,
-            "avgRating": row.avg_rating,
-            "nIngredientsUsed": row.n_ingredients_used,
-            "totalIngredients": row.total_ingredients
-        })
+    except HTTPException:
+        raise
 
-    return {"recipes": recipes}
-
-    # except HTTPException:
-    #     raise
-    #
-    # except Exception as e:
-    #     raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
 @app.post("/test-db")
