@@ -8,7 +8,7 @@ const IngredientSelectPage = ({onNavigateToRecipes}) => {
   //const [selectedIngredients, setSelectedIngredients] = useState([]);
   const [selectedIngredients, setSelectedIngredients] = useLocalStorage('selectedIngredients', []);
   
-
+  console.log('API_BASE_URL:', process.env.VITE_API_URL);
   const API_BASE_URL = process.env.VITE_API_URL || 'http://127.0.0.1:8000';
 
   // Mock API functions - replace with your actual API calls
