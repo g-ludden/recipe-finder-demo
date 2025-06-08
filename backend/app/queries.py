@@ -11,7 +11,7 @@ FIND_BEST_RECIPES = """
                 WHEN ingredient_id IN ({ingredient_ids}) 
                 THEN (
                     CASE WHEN ingredient_id IN ({pantry_ingredient_ids})
-                    THEN 0 ELSE (1 + {alpha}) END
+                    THEN 0.5 ELSE (1 + {alpha}) END
                 )
                 ELSE 0
             END AS score,
