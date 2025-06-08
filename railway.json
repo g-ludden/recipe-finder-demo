@@ -5,17 +5,17 @@
       "build": "CI=false npm ci && npm run build",
       "start": "npx serve -s dist",
       "env": { 
-		"VITE_API_URL": "https://backend.production.up.railway.app" 
-		}
+        "VITE_API_URL": "https://backend.production.up.railway.app" 
+      }
     },
     "backend": {
       "root": "backend",
-      "build": "ls -la && cat requirements.txt && pip install -r requirements.txt",
+      "build": "pwd && ls -la && echo 'Contents of requirements.txt:' && cat requirements.txt && echo 'Installing dependencies...' && pip install --upgrade pip && pip install -r requirements.txt && echo 'Installation complete'",
       "start": "uvicorn app.main:app --host 0.0.0.0 --port $PORT",
       "env": {
         "DATABASE_URL": "${{postgresql.connectionString}}",
-		"FRONTEND_URL": "",
-		"PORT": "$PORT"
+        "FRONTEND_URL": "",
+        "PORT": "$PORT"
       }
     }
   }
