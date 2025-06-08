@@ -57,7 +57,7 @@ async def find_best_recipes(request: Request, db: Session = Depends(get_db)):
             ingredient_ids=",".join([str(id_) for id_ in chosen_ingredient_ids]),
             limit=200,
             pantry_ingredient_ids=",".join([str(id_) for id_ in pantry_ids]),
-            alpha=0.7,
+            alpha=1.0,
             beta=0.9
         )
 
