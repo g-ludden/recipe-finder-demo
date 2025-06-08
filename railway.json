@@ -2,7 +2,7 @@
   "services": {
     "frontend": {
       "root": "frontend",
-      "build": "npm ci && npm run build",
+      "build": "CI=false npm ci && npm run build",
       "start": "npx serve -s dist",
       "env": { 
 		"VITE_API_URL": "https://backend.production.up.railway.app" 
