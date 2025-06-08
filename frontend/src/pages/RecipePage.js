@@ -10,7 +10,7 @@ const RecipePage = ({onNavigateToIngredients}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [gridLayout, setGridLayout] = useState('standard');
-  const API_BASE_URL = process.env.VITE_API_URL || 'http://127.0.0.1:8000';
+  const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000';
 
   // Fetch recipes when component mounts and selectedIngredients exist
   useEffect(() => {
@@ -49,7 +49,7 @@ const RecipePage = ({onNavigateToIngredients}) => {
     try {
       const ingredientIds = selectedIngredients.map(ingredient => ingredient.id);
       
-      const response = await fetch('http://127.0.0.1:8000/find-best-recipes', {
+      const response = await fetch(`${API_BASE_URL}/find-best-recipes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
