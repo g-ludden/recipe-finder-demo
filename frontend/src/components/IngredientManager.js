@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import IngredientSearch from './IngredientSearch';
-import { components, backgrounds } from '../styles/foodStyles';
+import { components } from '../styles/foodStyles';
 
 // Default food-friendly styles using the new style system
 const defaultStyles = {
@@ -31,9 +31,7 @@ const IngredientManager = ({
   initialIngredients = [], // Optional initial ingredients
   styles = {}, // Custom styles
   maxIngredients = 50, // Optional limit on total ingredients
-  className = "",
-  showStats = true, // Show ingredient count statistics
-  showMaxWarning = true, // Show warning when approaching max
+  className = ""
 }) => {
   // Merge default styles with custom styles
   const componentStyles = { ...defaultStyles, ...styles };
@@ -131,9 +129,6 @@ const IngredientManager = ({
     return '🥘'; // Default food emoji
   };
 
-  // Calculate completion percentage for visual feedback
-  const completionPercentage = Math.min((ingredients.length / Math.max(maxIngredients * 0.7, 5)) * 100, 100);
-  const isNearingMax = ingredients.length >= maxIngredients * 0.8;
 
   return (
     <div className={`${componentStyles.container} ${className}`}>

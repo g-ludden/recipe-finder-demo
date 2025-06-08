@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import IngredientManager from '../components/IngredientManager';
 import { components, backgrounds, layout } from '../styles/foodStyles';
@@ -8,13 +8,13 @@ const IngredientSelectPage = ({onNavigateToRecipes}) => {
   //const [selectedIngredients, setSelectedIngredients] = useState([]);
   const [selectedIngredients, setSelectedIngredients] = useLocalStorage('selectedIngredients', []);
   
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+
+  const API_BASE_URL = process.env.VITE_API_URL || 'http://127.0.0.1:8000';
 
   // Mock API functions - replace with your actual API calls
   const loadPresetIngredients = async () => {
     try {
-        const response = await fetch(`http://127.0.0.1:8000/fetch-pantry-ingredients`);
+        const response = await fetch(`${API_BASE_URL}/fetch-pantry-ingredients`);
         if (!response.ok) {
           throw new Error('Failed to fetch pantry ingredients');
         }
@@ -31,7 +31,7 @@ const IngredientSelectPage = ({onNavigateToRecipes}) => {
     try {
       if (!query.trim()) return [];
       
-      const response = await fetch(`http://127.0.0.1:8000/search-ingredient?q=${encodeURIComponent(query)}`);
+      const response = await fetch(`${API_BASE_URL}/search-ingredient?q=${encodeURIComponent(query)}`);
       if (!response.ok) {
         throw new Error('Failed to search ingredients');
       }
@@ -99,10 +99,10 @@ const IngredientSelectPage = ({onNavigateToRecipes}) => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <button
               onClick={handleContinue}
-              disabled={selectedIngredients.length === 0 || isLoading}
+              disabled={selectedIngredients.length === 0 }
               className={`${components.button.primary} px-8 py-3 text-lg min-w-48 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none`}
             >
-              {isLoading ? 'Loading...' : 'Find Recipes'}
+              {'Find Recipes'}
             </button>
           </div>
         </div>

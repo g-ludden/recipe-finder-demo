@@ -1,5 +1,5 @@
 import React from 'react';
-import { components, backgrounds } from '../styles/foodStyles';
+import { components } from '../styles/foodStyles';
 
 const RecipeCard = ({ 
   recipeName, 

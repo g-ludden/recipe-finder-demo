@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback} from 'react';
 import Layout from '../components/Layout';
 import RecipeCard from '../components/RecipeCard';
 import { components, backgrounds, layout } from '../styles/foodStyles';
@@ -10,6 +10,7 @@ const RecipePage = ({onNavigateToIngredients}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [gridLayout, setGridLayout] = useState('standard');
+  const API_BASE_URL = process.env.VITE_API_URL || 'http://127.0.0.1:8000';
 
   // Fetch recipes when component mounts and selectedIngredients exist
   useEffect(() => {
@@ -41,7 +42,7 @@ const RecipePage = ({onNavigateToIngredients}) => {
     return () => window.removeEventListener('resize', detectOptimalLayout);
   }, [recipes.length]);
 
-  const fetchRecipes = async () => {
+  const fetchRecipes = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     
@@ -57,11 +58,11 @@ const RecipePage = ({onNavigateToIngredients}) => {
           ingredientIds: ingredientIds
         })
       });
-
+  
       if (!response.ok) {
         throw new Error('Failed to fetch recipes');
       }
-
+  
       const data = await response.json();
       setRecipes(data.recipes || []);
     } catch (error) {
@@ -70,7 +71,13 @@ const RecipePage = ({onNavigateToIngredients}) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [selectedIngredients]);
+  
+  useEffect(() => {
+    if (selectedIngredients.length > 0) {
+      fetchRecipes();
+    }
+  }, [selectedIngredients, fetchRecipes]);
 
   const handleRetry = () => {
     fetchRecipes();
