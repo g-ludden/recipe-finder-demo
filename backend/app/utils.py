@@ -1,5 +1,6 @@
 import pandas as pd
 import inflect
+import pickle as pkl
 from rapidfuzz import fuzz, process
 
 # Preload ingredient data and set some global vars
@@ -24,13 +25,16 @@ pantry_ingredients_preload = [
     for id_, ingredient in zip(pantry_ids, pantry_ingredients)
 ]
 
+with open('./app/data/substitutions_final.pkl', 'rb') as f:
+    substitutes_lookup = pkl.load(f)
+
 inflector = inflect.engine()
 
 
 def fetch_top_k_ingredients(search_query, limit=10):
     """
     Return top K results from ingredients list base on a
-    user's search query
+    user's search query.
     """
     search_query = search_query.lower()
     if ' ' in search_query:
@@ -62,3 +66,11 @@ def token_search(tokens):
     ]
     candidates = [ingredient_lookup[idx] for idx in candidate_idxs]
     return candidates
+
+def get_substitutes(ingredient_ids):
+    ingredient_names = [ingredient_lookup[id_] for id_ in ingredient_ids]
+    substitutes = []
+    for ingredient in ingredient_names:
+        substitutes += substitutes_lookup[ingredient]
+
+    return [rev_ingredient_lookup[sub] for sub in substitutes]

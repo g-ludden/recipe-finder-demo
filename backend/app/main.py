@@ -7,7 +7,7 @@ import os, sqlalchemy
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 from app.utils import fetch_top_k_ingredients, rev_ingredient_lookup, \
-    pantry_ingredients_preload, pantry_ids
+    pantry_ingredients_preload, pantry_ids, get_substitutes
 from app.database import get_db
 from app.queries import FIND_BEST_RECIPES
 
@@ -52,6 +52,12 @@ async def find_best_recipes(request: Request, db: Session = Depends(get_db)):
 
         if not chosen_ingredient_ids:
             raise HTTPException(status_code=400, detail="No ingredients provided")
+
+        # Add substitutes
+        substitute_ids = get_substitutes(chosen_ingredient_ids)
+        print(f"substitutes fetched: {substitute_ids}")
+        chosen_ingredient_ids = list(set(substitute_ids + chosen_ingredient_ids))
+
 
         query = FIND_BEST_RECIPES.format(
             ingredient_ids=",".join([str(id_) for id_ in chosen_ingredient_ids]),
