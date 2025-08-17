@@ -55,7 +55,6 @@ async def find_best_recipes(request: Request, db: Session = Depends(get_db)):
 
         # Add substitutes
         substitute_ids = get_substitutes(chosen_ingredient_ids)
-        print(f"substitutes fetched: {substitute_ids}")
         chosen_ingredient_ids = list(set(substitute_ids + chosen_ingredient_ids))
 
 
